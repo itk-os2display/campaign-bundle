@@ -160,7 +160,7 @@ Feature: campaign
     And channel 4 should be pushed to screen 4
 
   Scenario: When I change the campaign to and old date, it should be removed from screens
-    And I send a "PUT" request to "/api/campaign/2" with body:
+    When I send a "PUT" request to "/api/campaign/2" with body:
     """
     {
       "id": 2,
@@ -186,11 +186,17 @@ Feature: campaign
     And I clear utility service
     And I call pushToScreens
 
-    And channel 4 should not be pushed to screen 1
+    Then channel 4 should not be pushed to screen 1
     And channel 4 should not be pushed to screen 2
     And channel 4 should be pushed to screen 3
     And channel 4 should be pushed to screen 4
 
+  Scenario: When a shared channel is added to screen it is still overridden by a campaign
+    When I create a shared channel with content uniqueId "test1" index "index1" screens "[1]"
+    And I clear utility service
+    And I call pushToScreens
+    And I print all the utility service curl calls
+    And I get all the utility service curl calls with prefix middleware
 
   @dropSchema
   Scenario: Drop schema

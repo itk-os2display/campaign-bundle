@@ -15,6 +15,7 @@ use Doctrine\ORM\Tools\SchemaTool;
 use Os2Display\CoreBundle\Entity\Channel;
 use Os2Display\CoreBundle\Entity\ChannelScreenRegion;
 use Os2Display\CoreBundle\Entity\ChannelSlideOrder;
+use Os2Display\CoreBundle\Entity\SharedChannel;
 use Os2Display\CoreBundle\Entity\User;
 use Os2Display\CoreBundle\Entity\UserGroup;
 use Symfony\Component\HttpKernel\KernelInterface;
@@ -326,7 +327,8 @@ class CampaignContext extends BaseContext implements Context, KernelAwareContext
     /**
      * @Then channel :arg1 should be deleted from middleware
      */
-    public function channelShouldBeDeletedFromMiddleware($arg1) {
+    public function channelShouldBeDeletedFromMiddleware($arg1)
+    {
         $requests = $this->container->get('os2display.utility_service')
             ->getAllRequests('middleware');
 
@@ -473,6 +475,45 @@ class CampaignContext extends BaseContext implements Context, KernelAwareContext
 
         $channel->addChannelScreenRegion($csr);
         $screen->addChannelScreenRegion($csr);
+
+        $this->doctrine->getManager()->flush();
+    }
+
+    /**
+     * @When I create a shared channel with content uniqueId :arg1 index :arg2 screens :arg3
+     */
+    public function iCreateASharedChannelWithContentUniqueidIndexChannels(
+        $arg1,
+        $arg2,
+        $arg3
+    ) {
+        $screenRepository = $this->doctrine->getManager()->getRepository(
+            Screen::class
+        );
+
+        $sharedChannel = new SharedChannel();
+        $sharedChannel->setCreatedAt(0);
+        $sharedChannel->setModifiedAt(0);
+        $sharedChannel->setUniqueId($arg1);
+        $sharedChannel->setIndex($arg2);
+        $sharedChannel->setContent("{\"id\":17,\"title\":\"Delt\",\"slides\":[{\"template\":\"slideshow\",\"options\":{\"duration\":10,\"animation\":\"\",\"fade\":\"fade\",\"logopos\":{},\"logosize\":\"10%\"},\"id\":34,\"title\":\"sdafasdf\",\"orientation\":\"landscape\",\"created_at\":1518180468,\"duration\":15,\"published\":true,\"media_type\":\"image\",\"slide_type\":\"slideshow\",\"media\":[],\"media_thumbs\":[],\"logo\":\"\",\"preview_path\":\"\",\"template_path\":\"\",\"path\":\"\",\"css_path\":\"\",\"js_path\":\"\",\"js_script_id\":\"slideshow\",\"server_path\":\"https:\/\/admin.os2display.vm\"}],\"unique_id\":\"" . $arg1 ."\",\"created_at\":1518180483,\"schedule_repeat_days\":[],\"_id\":\"" . $arg1 ."\",\"_score\":1}");
+
+        $screens = json_decode($arg3);
+
+        foreach ($screens as $screenId) {
+            $screen = $screenRepository->findOneBy(['id' => $screenId]);
+
+            $channelScreenRegion = new ChannelScreenRegion();
+            $channelScreenRegion->setScreen($screen);
+            $channelScreenRegion->setSharedChannel($sharedChannel);
+            $channelScreenRegion->setRegion(0);
+
+            $this->doctrine->getManager()->persist($channelScreenRegion);
+
+            $sharedChannel->addChannelScreenRegion($channelScreenRegion);
+        }
+
+        $this->doctrine->getManager()->persist($sharedChannel);
 
         $this->doctrine->getManager()->flush();
     }
