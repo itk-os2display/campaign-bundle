@@ -6,6 +6,12 @@ services:
     tags:
       - { name: kernel.event_listener, event: ik.cron, method: onCron, priority: 1 }
 
+  # Overrides CoreBundle/Services/MiddlewareService.
+  os2display.middleware.service:
+    class: Os2Display\CampaignBundle\Service\MiddlewareService
+    arguments: ['@doctrine.orm.entity_manager', '@jms_serializer']
+    public: true
+
   os2display.campaign_manager:
     class: Os2Display\CampaignBundle\Service\CampaignManager
     arguments:
