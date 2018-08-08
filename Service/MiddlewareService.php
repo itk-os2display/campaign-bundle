@@ -86,14 +86,16 @@ class MiddlewareService extends BaseService
                             'data' => $data->data,
                             'regions' => [1],
                         ];
-                    }
-                    else {
+                    } else {
                         $regions = $result->channels[$channelId]->regions;
 
                         if (!in_array(1, $regions)) {
                             $result->channels[$channelId]->regions[] = 1;
                         }
                     }
+
+                    // Hash the the channel object to avoid unnecessary updates in the frontend.
+                    $result->channels[$channelId]->hash = sha1(json_encode($result->channels[$channelId]));
                 }
             }
         }
