@@ -23,11 +23,19 @@ class Os2DisplayCampaignExtension extends Os2DisplayBaseExtension
 
         parent::load($configs, $container);
 
-        $loader = new Loader\YamlFileLoader($container, new FileLocator($this->dir . '/../Resources/config'));
-
         // If test environment, inject mocks.
         if ($container->getParameter('kernel.environment') == 'acceptance') {
+            $loader = new Loader\YamlFileLoader($container, new FileLocator($this->dir . '/../Resources/config'));
+
             $loader->load('services_acceptance.yml');
+        }
+
+        $configuration = new Configuration();
+        $config = $this->processConfiguration($configuration, $configs);
+        $def = $container->getDefinition('os2display.middleware.service');
+
+        if (isset($config['cache_ttl'])) {
+            $def->replaceArgument(3, $config['cache_ttl']);
         }
     }
 }

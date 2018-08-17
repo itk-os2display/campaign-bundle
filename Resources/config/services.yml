@@ -9,7 +9,7 @@ services:
   # Overrides CoreBundle/Services/MiddlewareService.
   os2display.middleware.service:
     class: Os2Display\CampaignBundle\Service\MiddlewareService
-    arguments: ['@doctrine.orm.entity_manager', '@jms_serializer']
+    arguments: ['@doctrine.orm.entity_manager', '@jms_serializer', '@os2display.core.cache', 300]
     public: true
 
   os2display.campaign_manager:

@@ -18,11 +18,16 @@ class Configuration implements ConfigurationInterface
     public function getConfigTreeBuilder()
     {
         $treeBuilder = new TreeBuilder();
-        $rootNode = $treeBuilder->root('os2display_campaign');
+        $rootNode = $treeBuilder->root('os2_display_campaign');
 
         // Here you should define the parameters that are allowed to
         // configure your bundle. See the documentation linked above for
         // more information on that topic.
+
+        $rootNode
+            ->children()
+                ->integerNode('cache_ttl')->end()
+            ->end();
 
         return $treeBuilder;
     }

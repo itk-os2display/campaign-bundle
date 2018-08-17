@@ -48,6 +48,12 @@ class MiddlewareService extends BaseService
      */
     public function getCurrentScreenArray($screenId)
     {
+        $cachedResult = $this->cache->fetch('os2display.campaign.screen.' . $screenId);
+
+        if ($cachedResult != false) {
+            return $cachedResult;
+        }
+
         // Get regular results.
         $result = parent::getCurrentScreenArray($screenId);
 
@@ -99,6 +105,8 @@ class MiddlewareService extends BaseService
                 }
             }
         }
+
+        $this->cache->save('os2display.campaign.screen.' . $screenId, $result, $this->cacheTTL);
 
         return $result;
     }
