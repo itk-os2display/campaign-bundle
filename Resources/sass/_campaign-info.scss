@@ -1,11 +1,12 @@
 .campaign-info {
-  position: absolute;
-  top: 5px;
-  left: 10px;
+  &--icon-container {
+    width: 30px;
+    height: 30px;
+  }
 
   &--icon {
-    width: 20px;
-    height: 20px;
+    width: 18px;
+    height: 18px;
   }
 
   &--message {

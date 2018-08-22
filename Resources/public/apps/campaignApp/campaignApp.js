@@ -113,13 +113,11 @@ angular.module('campaignApp').service('campaignAppSetup', [
                 if (apiData && apiData.active_campaigns && apiData.active_campaigns.length > 0) {
                     var message = '<p>' + $translate.instant('messages.active_campaign_exists') + '</p>';
 
-                    var iconSource = 'bundles/os2displayadmin/images/icons/exclamation-icon.png';
+                    var iconSource = 'bundles/os2displaycampaign/assets/icons/calendar.png';
 
                     var html =
-                        '<div class="campaign-info">' +
-                        '  <div tooltips tooltip-template="' + message + '" tooltip-side="top">' +
-                        '    <img class="campaign-info--icon" src="' + iconSource + '" title="">' +
-                        '  </div>' +
+                        '<div tooltips tooltip-template="' + message + '" tooltip-side="top">' +
+                        '  <div class="campaign-info--icon-container"><img class="campaign-info--icon" src="' + iconSource + '" title=""></div>' +
                         '</div>';
 
                     busService.$emit(data.returnEvent, {
